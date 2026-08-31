@@ -1,4 +1,8 @@
 .env
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
 create_tables.py
 insert_data.py
 test_db.py
