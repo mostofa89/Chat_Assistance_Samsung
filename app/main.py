@@ -7,7 +7,15 @@ from .database import models
 from .database.crud import get_all_phones, get_phone
 
 from .chatbot import answer_question
+from .rag.retriever import build_index
+from .database.connection import SessionLocal  # or however you get a session
+from .agents.crew import PhoneReviewCrew
+from .chatbot.comparison import compare_phones
 
+db = SessionLocal()
+phones = get_all_phones(db)
+phone_index = build_index(phones)
+db.close()
 
 Base.metadata.create_all(bind=engine)
 
@@ -91,10 +99,21 @@ class ChatRequest(BaseModel):
 
 @app.post("/chat")
 def chat(request: ChatRequest):
+    answer = answer_question(phone_index, request.question)
+    return {"question": request.question, "answer": answer}
 
-    answer = answer_question(None, request.question)
 
-    return {
-        "question": request.question,
-        "answer": answer
-    }
+@app.get("/phones/{phone_name}/review")
+def phone_review(phone_name: str, db: Session = Depends(get_db)):
+    phone = get_phone(db, phone_name)
+    if not phone:
+        raise HTTPException(status_code=404, detail="Phone not found")
+    crew = PhoneReviewCrew(db)
+    return crew.run(phone)
+
+@app.get("/compare")
+def compare(phone1: str, phone2: str, db: Session = Depends(get_db)):
+    p1, p2 = get_phone(db, phone1), get_phone(db, phone2)
+    if not p1 or not p2:
+        raise HTTPException(status_code=404, detail="One or both phones not found")
+    return compare_phones(p1, p2)

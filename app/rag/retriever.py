@@ -105,10 +105,7 @@ def search(index, question, k=3):
         convert_to_numpy=True
     ).astype("float32")
 
-    distances, indices = index.search(
-        query_vector,
-        k
-    )
+    distances, indices = index.search(query_vector, k)
 
     results = []
 
