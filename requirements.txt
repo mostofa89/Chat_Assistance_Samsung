@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+beautifulsoup4
+requests
+sqlalchemy
+psycopg2-binary
+python-dotenv
+numpy>=2.0
