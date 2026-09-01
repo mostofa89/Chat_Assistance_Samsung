@@ -1,25 +1,13 @@
-from app.chatbot.chatbot import ask_llm
-from app.rag.retriever import search
+from app.chatbot.chatbot import answer_question as chatbot_answer_question
 
 
 def answer_question(
     index,
-    question
+    question,
+    phones=None
 ):
-
-    documents = search(
+    return chatbot_answer_question(
         index,
         question,
-        k=3
+        phones
     )
-
-    context = "\n\n".join(
-        documents
-    )
-
-    answer = ask_llm(
-        context,
-        question
-    )
-
-    return answer

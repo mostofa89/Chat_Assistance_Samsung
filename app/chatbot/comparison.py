@@ -1,9 +1,18 @@
 def compare_phones(phone1, phone2):
+    def display_summary(phone):
+        return {
+            "type": phone.display_type,
+            "size": phone.display_size,
+            "resolution": phone.display_resolution,
+            "protection": phone.display_protection,
+            "refresh_rate": phone.display_refresh_rate,
+            "brightness": phone.display_brightness,
+        }
 
     return {
         "display": {
-            phone1.name: phone1.display,
-            phone2.name: phone2.display
+            phone1.name: display_summary(phone1),
+            phone2.name: display_summary(phone2)
         },
 
         "processor": {
